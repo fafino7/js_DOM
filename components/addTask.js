@@ -1,3 +1,4 @@
+import { uniqueDates } from '../services/date.js';
 import checkComplete from './checkComplete.js';
 import deleteIcon from './deleteIcon.js';
 
@@ -12,12 +13,20 @@ export const addTask = (evento) => {
     const date = calendar.value;
     const dateFormat = moment(date).format('DD/MM/YYYY');
     
+    if (value == '' || date == ''){
+            return;
+    }
+    
     input.value = '';
     calendar.value = '';
 
+    const complete = false;
+
     const taskObj = {
         value,
-        dateFormat
+        dateFormat,
+        complete,
+        id: uuid.v4()
     };
 
     const taskList = JSON.parse(localStorage.getItem('tasks')) || [];    
@@ -28,22 +37,30 @@ export const addTask = (evento) => {
     list.appendChild(task);
   }
   
-export const createTask = ({value,dateFormat}) => {
+export const createTask = ({value, dateFormat, complete, id}) => {
     const task = document.createElement('li');
-            task.classList.add('card');
+        task.classList.add('card');
 
     const taskContent = document.createElement('div');
 
+const check = checkComplete(id);
+
+    if (complete) {
+        check.classList.toggle('fas');
+        check.classList.toggle('completeIcon');
+        check.classList.toggle('far');
+    }
+
     const titleTask = document.createElement('span');
-            titleTask.classList.add('task');
-            titleTask.innerText = value;
-            taskContent.appendChild(checkComplete());
-            taskContent.appendChild(titleTask);
+        titleTask.classList.add('task');
+        titleTask.innerText = value;
+        taskContent.appendChild(checkComplete(id));
+        taskContent.appendChild(titleTask);
 
     const dateElement = document.createElement('span');
-            dateElement.innerHTML = dateFormat;
-            task.appendChild(taskContent);
-            task.appendChild(dateElement);
-            task.appendChild(deleteIcon());
+        dateElement.innerHTML = dateFormat;
+        task.appendChild(taskContent);
+        task.appendChild(dateElement);
+        task.appendChild(deleteIcon());
     return task;
 };
