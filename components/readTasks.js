@@ -18,4 +18,8 @@ export const displayTasks = () => {
       }
     });
   });
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> projectoInicial
